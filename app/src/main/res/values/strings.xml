@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Navigatour</string>
+    <string name="logo_description">Navigatour logo</string>
+    <string name="registration_page_title">Welcome to Navigatour, Sign up to Continue</string>
+    <string name="registration_page_username_hint">Username:</string>
+    <string name="registration_page_email_hint">Email:</string>
+    <string name="registration_page_password_hint">Password:</string>
+
+</resources>
