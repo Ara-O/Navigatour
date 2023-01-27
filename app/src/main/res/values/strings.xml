@@ -5,5 +5,6 @@
     <string name="registration_page_username_hint">Username:</string>
     <string name="registration_page_email_hint">Email:</string>
     <string name="registration_page_password_hint">Password:</string>
+    <string name="registration_button_text">Sign Up</string>
 
 </resources>
