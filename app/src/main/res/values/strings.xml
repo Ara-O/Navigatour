@@ -10,5 +10,5 @@
     <string name="login_button_text">Log In</string>
     <string name="already_have_account_text"><u>Already have an account?</u></string>
     <string name="does_not_have_account_text"><u>Create an account</u></string>
-
+    <string name="mapbox_access_token">pk.eyJ1IjoiYXJhLW8iLCJhIjoiY2xkaGhhYnhmMTdnaDN3cjh4azFqc2QwNyJ9.HOF3rCh-G66AFpjz6al8ew</string>
 </resources>

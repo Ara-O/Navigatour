@@ -59,7 +59,8 @@ class RegistrationActivity : AppCompatActivity() {
                     Log.d(TAG, user.toString())
                     Toast.makeText(baseContext, "Authentication is a success.",
                         Toast.LENGTH_SHORT).show()
-//                    updateUI(user)
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure")
