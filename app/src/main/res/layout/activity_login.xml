@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegistrationActivity">
+    tools:context=".LoginActivity">
+
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
@@ -37,36 +38,18 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/registration_welcome"
+            android:id="@+id/login_welcome"
             android:layout_width="255dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_medium"
             android:lineSpacingExtra="4sp"
             android:minHeight="48dp"
-            android:text="@string/registration_page_title"
+            android:text="@string/login_page_title"
             android:textColor="#000000"
             android:textSize="19sp" />
 
         <EditText
-            android:id="@+id/registration_username"
-            android:layout_width="320dp"
-            android:layout_height="wrap_content"
-             android:layout_marginTop="20dp"
-            android:height="50dp"
-            android:autofillHints="name"
-            android:ems="10"
-            android:fontFamily="@font/poppins_light"
-            android:hint="@string/registration_page_username_hint"
-            android:inputType="textPersonName"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:textColorHighlight="#00BCD4"
-             android:textSize="14sp"
-            android:backgroundTint="@android:color/darker_gray"
-            />
-
-        <EditText
-            android:id="@+id/registration_email"
+            android:id="@+id/login_email"
             android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -82,7 +65,7 @@
             android:textSize="14sp" />
 
         <EditText
-            android:id="@+id/registration_password"
+            android:id="@+id/login_password"
             android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -98,24 +81,23 @@
             android:textSize="14sp" />
 
         <Button
-            android:id="@+id/sign_up_button"
+            android:id="@+id/login_button"
             android:layout_width="320dp"
             android:layout_height="56dp"
             android:layout_marginTop="30dp"
             android:height="30dp"
             android:backgroundTint="#000000"
-            android:text="@string/registration_button_text"
+            android:text="@string/login_button_text"
             app:cornerRadius="0dp" />
 
         <TextView
-            android:id="@+id/already_has_account"
+            android:id="@+id/create_account_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:fontFamily="@font/poppins_light"
-            android:text="@string/already_have_account_text"
+            android:text="@string/does_not_have_account_text"
             android:textSize="13sp" />
 
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

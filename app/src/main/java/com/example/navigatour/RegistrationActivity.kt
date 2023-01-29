@@ -1,13 +1,15 @@
 package com.example.navigatour
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.navigatour.databinding.ActivityRegistrationBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+
 
 private const val TAG = "RegistrationActivity"
 
@@ -26,16 +28,28 @@ class RegistrationActivity : AppCompatActivity() {
         binding = ActivityRegistrationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.signUpButton.setOnClickListener(){
+        binding.signUpButton.setOnClickListener{
             userPassword = binding.registrationPassword.text.toString()
             userEmail = binding.registrationEmail.text.toString()
             userUsername = binding.registrationUsername.text.toString()
-            signUpUser(userEmail, userPassword)
+            if(userPassword.isNotEmpty() && userEmail.isNotEmpty() && userUsername.isNotEmpty()){
+                signUpUser(userEmail, userPassword)
+            }else{
+                Toast.makeText(baseContext, "One or more fields are empty, " +
+                        "ensure that all fields all fill",
+                    Toast.LENGTH_SHORT).show()
+            }
         }
+
+        binding.alreadyHasAccount.setOnClickListener{
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+
 
     }
 
-    fun signUpUser(email: String, password: String){
+    private fun signUpUser(email: String, password: String){
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
@@ -48,10 +62,10 @@ class RegistrationActivity : AppCompatActivity() {
 //                    updateUI(user)
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(baseContext, "Authentication failed.",
+                    Log.w(TAG, "createUserWithEmail:failure")
+                    Toast.makeText(baseContext, "Authentication failed - " + task.exception?.message.toString(),
                         Toast.LENGTH_SHORT).show()
-//                    updateUI(null)
+
                 }
             }
     }
