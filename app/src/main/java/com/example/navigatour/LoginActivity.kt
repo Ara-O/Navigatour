@@ -1,10 +1,10 @@
 package com.example.navigatour
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.navigatour.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -37,6 +37,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        //Move to create account page
         binding.createAccountButton.setOnClickListener{
             val intent = Intent(this, RegistrationActivity::class.java)
             startActivity(intent)
@@ -55,6 +56,11 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(baseContext, "User Signed In",
                         Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, MainActivity::class.java)
+
+                    // clears the backlog so we can't go back to login page
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+
                     startActivity(intent)
 
                 } else {

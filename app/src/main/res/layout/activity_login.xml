@@ -20,6 +20,7 @@
             android:id="@+id/navigatour_logo"
             android:layout_width="82dp"
             android:layout_height="101dp"
+            android:layout_marginTop="30dp"
             android:layout_marginBottom="10dp"
             android:contentDescription="@string/logo_description"
             app:srcCompat="@drawable/paper_airplane_png_hd_airplane_flight_paper_paperairplane_paperplane_plane_travel_comments_980" />
