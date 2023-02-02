@@ -1,27 +1,32 @@
 package com.example.navigatour
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts
-import com.example.navigatour.databinding.ActivityMainBinding
+import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import com.example.navigatour.databinding.ActivityMainBinding
+import com.example.navigatour.utils.LocationPermissionHelper
+import com.mapbox.android.core.location.LocationEngine
+import com.mapbox.android.core.location.LocationEngineProvider
 import com.mapbox.android.gestures.MoveGestureDetector
+import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
+import com.mapbox.maps.MapView
+import com.mapbox.maps.Style
 import com.mapbox.maps.extension.style.expressions.dsl.generated.interpolate
 import com.mapbox.maps.plugin.LocationPuck2D
+import com.mapbox.maps.plugin.annotation.annotations
+import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationOptions
+import com.mapbox.maps.plugin.annotation.generated.createCircleAnnotationManager
+import com.mapbox.maps.plugin.gestures.OnMapClickListener
 import com.mapbox.maps.plugin.gestures.OnMoveListener
+import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorBearingChangedListener
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
-import com.example.navigatour.R
-import com.example.navigatour.utils.LocationPermissionHelper
 import java.lang.ref.WeakReference
-
-import android.widget.Toast
-import com.mapbox.maps.MapView
-import com.mapbox.maps.Style
-
 
 
 //var mapView: MapView? = null
@@ -51,6 +56,32 @@ class MainActivity : AppCompatActivity() {
 
         override fun onMoveEnd(detector: MoveGestureDetector) {}
     }
+
+    private val onMapClickListener = object : OnMapClickListener {
+
+        override fun onMapClick(point: Point): Boolean {
+            var long = point.longitude()
+            var lat = point.latitude()
+
+            binding.selectedLat.text = "%.4f".format(point.latitude())
+            binding.selectedLong.text = "%.4f".format(point.longitude())
+            //set a marker here
+
+            val annotationApi = mapView?.annotations
+            val circleAnnotationManager = annotationApi?.createCircleAnnotationManager()
+            val circleAnnotationOptions: CircleAnnotationOptions = CircleAnnotationOptions().withPoint(Point.fromLngLat(long, lat))
+                // Style the circle that will be added to the map.
+                .withCircleRadius(8.0)
+                .withCircleColor("#ee4e8b")
+                .withCircleStrokeWidth(2.0)
+                .withCircleStrokeColor("#ffffff")
+                .withDraggable(true)
+            circleAnnotationManager?.create(circleAnnotationOptions)
+
+            return false
+        }
+    }
+
     private lateinit var mapView: MapView
 
 
@@ -72,23 +103,39 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    //Initialize Maps
     private fun onMapReady() {
+
+//        val pointAnnotationManager = annotationApi?.createAnnotationManager(mapView)
+//        val pointAnnotationOptions: PointAnnotationOptions = PointAnnotationOptions().withPoint(
+//            Point.fromLngLat(18.06, 59.31)).withIconImage()
+
+
+
+//        var point: Int
+//        mapView.getMapboxMap().addOnMapClickListener(point -> {
+//            val currentLocation = point.latitude()
+//            val currentLong = point.longitude()
+//            val currentAlt = point.altitude()
+//        })
+
         mapView.getMapboxMap().setCamera(
             CameraOptions.Builder()
                 .zoom(14.0)
                 .build()
         )
         mapView.getMapboxMap().loadStyleUri(
-            Style.OUTDOORS
+            Style.SATELLITE
         ) {
             initLocationComponent()
             setupGesturesListener()
         }
     }
 
-
+    //Adds movement listener
     private fun setupGesturesListener() {
         mapView.gestures.addOnMoveListener(onMoveListener)
+        mapView.gestures.addOnMapClickListener(onMapClickListener)
     }
 
     private fun initLocationComponent() {

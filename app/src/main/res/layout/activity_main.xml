@@ -9,12 +9,11 @@
 
     <com.mapbox.maps.MapView
         android:id="@+id/mapView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="83dp"
-        app:layout_constraintBottom_toTopOf="@+id/editText"
+        android:layout_marginBottom="19dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:mapbox_cameraTargetLat="40.7128"
@@ -23,27 +22,136 @@
 
     </com.mapbox.maps.MapView>
 
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/linearLayout2"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:orientation="vertical"-->
+    <!--        app:layout_constraintBottom_toTopOf="parent"-->
+    <!--        app:layout_constraintEnd_toStartOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent">-->
+
+    <!--    </LinearLayout>-->
+
     <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="wrap_content"
+        android:id="@+id/linearLayout3"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="parent"
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal"
+        android:paddingStart="20sp"
+        android:paddingEnd="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/mapView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/selectedLongText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_light"
+                android:text="@string/selected_latitude_text"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/selectedLong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25sp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/selected_latitude"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+
+            <!--            <Button-->
+            <!--                android:id="@+id/addCoordinate"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:text="Add Coordinate" />-->
+
+            <!--            <Button-->
+            <!--                android:id="@+id/deleteCoordinate"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:text="Delete Coordinate" />-->
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/selectedLatText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_light"
+                android:text="@string/selected_longitude_text"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/selectedLat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25sp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/selected_longitude"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="164dp"
-        android:text="baaka"
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="416dp"
+        android:layout_height="259dp"
+        android:layout_marginBottom="3dp"
+        android:gravity="center|top"
+        android:orientation="vertical"
+        android:paddingTop="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mapView"></EditText>
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+
+
+        <Button
+            android:id="@+id/addCoord"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10sp"
+            android:backgroundTint="#000000"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            android:text="@string/add_coordinate_text"
+            android:textAlignment="center"
+            android:textSize="13sp"
+            app:cornerRadius="0dp" />
+
+        <Button
+            android:id="@+id/deleteCoord"
+            android:layout_width="251dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#000000"
+            android:text="@string/delete_coordinate_text"
+            android:textAlignment="center"
+            android:textSize="13sp"
+            app:cornerRadius="0dp" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

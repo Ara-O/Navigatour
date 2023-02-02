@@ -28,6 +28,16 @@ class RegistrationActivity : AppCompatActivity() {
         binding = ActivityRegistrationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val user = Firebase.auth.currentUser
+        if (user != null) {
+            // User is signed in
+            Log.d("sign up page", "no user signed in")
+        } else {
+            // No user is signed in
+            Log.d("sign up page", "user signed in")
+
+        }
+
         binding.signUpButton.setOnClickListener{
             userPassword = binding.registrationPassword.text.toString()
             userEmail = binding.registrationEmail.text.toString()

@@ -11,4 +11,11 @@
     <string name="already_have_account_text"><u>Already have an account?</u></string>
     <string name="does_not_have_account_text"><u>Create an account</u></string>
     <string name="mapbox_access_token">pk.eyJ1IjoiYXJhLW8iLCJhIjoiY2xkaGhhYnhmMTdnaDN3cjh4azFqc2QwNyJ9.HOF3rCh-G66AFpjz6al8ew</string>
+    <string name="selected_longitude_text"><u>Selected Latitude</u></string>
+    <string name="selected_latitude_text"><u>Selected Longitude</u></string>
+    <string name="selected_longitude">00.00.0</string>
+    <string name="selected_latitude">00.00.0</string>
+    <string name="add_coordinate_text">Add Co-ordinate</string>
+    <string name="delete_coordinate_text">Delete Co-ordinate</string>
+
 </resources>
