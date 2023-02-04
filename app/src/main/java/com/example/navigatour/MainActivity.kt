@@ -33,6 +33,9 @@ import java.lang.ref.WeakReference
 
 
 class MainActivity : AppCompatActivity() {
+    var currentLongFromClickListener: Double = 0.0
+    var currentLatFromClickListener: Double = 0.0
+
     private lateinit var binding: ActivityMainBinding
     private lateinit var locationPermissionHelper: LocationPermissionHelper
 
@@ -57,33 +60,22 @@ class MainActivity : AppCompatActivity() {
         override fun onMoveEnd(detector: MoveGestureDetector) {}
     }
 
+    //Spawn a default clicker at the users location, then when the user clicks add coordinate, a marker will
+    //be added where they signified
     private val onMapClickListener = object : OnMapClickListener {
 
         override fun onMapClick(point: Point): Boolean {
-            var long = point.longitude()
-            var lat = point.latitude()
+             currentLongFromClickListener = point.longitude()
+             currentLatFromClickListener = point.latitude()
 
             binding.selectedLat.text = "%.4f".format(point.latitude())
             binding.selectedLong.text = "%.4f".format(point.longitude())
-            //set a marker here
-
-            val annotationApi = mapView?.annotations
-            val circleAnnotationManager = annotationApi?.createCircleAnnotationManager()
-            val circleAnnotationOptions: CircleAnnotationOptions = CircleAnnotationOptions().withPoint(Point.fromLngLat(long, lat))
-                // Style the circle that will be added to the map.
-                .withCircleRadius(8.0)
-                .withCircleColor("#ee4e8b")
-                .withCircleStrokeWidth(2.0)
-                .withCircleStrokeColor("#ffffff")
-                .withDraggable(true)
-            circleAnnotationManager?.create(circleAnnotationOptions)
 
             return false
         }
     }
 
     private lateinit var mapView: MapView
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,12 +85,16 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-        mapView = binding.mapView
+        mapView = binding.mapViewArea
 
         //asking for location permission
         locationPermissionHelper = LocationPermissionHelper(WeakReference(this))
         locationPermissionHelper.checkPermissions {
             onMapReady()
+        }
+
+        binding.addCoord.setOnClickListener{
+            addMarkerFromClick()
         }
 
     }
@@ -200,4 +196,17 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    private fun addMarkerFromClick(){
+            val annotationApi = mapView?.annotations
+            val circleAnnotationManager = annotationApi?.createCircleAnnotationManager()
+            val circleAnnotationOptions: CircleAnnotationOptions = CircleAnnotationOptions().withPoint(Point.fromLngLat(currentLongFromClickListener, currentLatFromClickListener))
+                // Style the circle that will be added to the map.
+                .withCircleRadius(8.0)
+                .withCircleColor("#ee4e8b")
+                .withCircleStrokeWidth(2.0)
+                .withCircleStrokeColor("#ffffff")
+                .withDraggable(true)
+            circleAnnotationManager?.create(circleAnnotationOptions)
+
+    }
 }
