@@ -13,6 +13,7 @@ import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.style.expressions.dsl.generated.interpolate
+import com.mapbox.maps.extension.style.layers.generated.LineLayer
 import com.mapbox.maps.plugin.LocationPuck2D
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationOptions
@@ -23,6 +24,8 @@ import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorBearingChangedListener
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 
@@ -92,24 +95,14 @@ class MainActivity : AppCompatActivity() {
             addMarkerFromClick()
         }
 
+        binding.generateRoute.setOnClickListener{
+            callApi()
+        }
+
     }
 
     //Initialize Maps
     private fun onMapReady() {
-
-//        val pointAnnotationManager = annotationApi?.createAnnotationManager(mapView)
-//        val pointAnnotationOptions: PointAnnotationOptions = PointAnnotationOptions().withPoint(
-//            Point.fromLngLat(18.06, 59.31)).withIconImage()
-
-
-
-//        var point: Int
-//        mapView.getMapboxMap().addOnMapClickListener(point -> {
-//            val currentLocation = point.latitude()
-//            val currentLong = point.longitude()
-//            val currentAlt = point.altitude()
-//        })
-
         mapView.getMapboxMap().setCamera(
             CameraOptions.Builder()
                 .zoom(14.0)
@@ -121,6 +114,10 @@ class MainActivity : AppCompatActivity() {
             initLocationComponent()
             setupGesturesListener()
         }
+
+
+
+
     }
 
     //Adds movement listener
@@ -205,5 +202,19 @@ class MainActivity : AppCompatActivity() {
 
         routesMarked.add("$currentLongFromClickListener,$currentLatFromClickListener")
         Log.d("array", routesMarked.toString())
+    }
+
+    private fun callApi(){
+        val chosenRouteMarkers = routesMarked.joinToString(separator=";")
+        Log.d("chosenroutemarers", chosenRouteMarkers)
+        val routesApi = RetrofitHelper.getInstance().create(RoutesApi::class.java)
+        GlobalScope.launch {
+            val result = routesApi.getRoutes(chosenRouteMarkers)
+            if(result != null){
+                Log.d("sup", result.toString())
+                Log.d("sup", result.body().toString())
+            }
+        }
+
     }
 }
