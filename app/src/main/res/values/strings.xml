@@ -16,6 +16,6 @@
     <string name="selected_longitude">00.00.0</string>
     <string name="selected_latitude">00.00.0</string>
     <string name="add_coordinate_text">Add Co-ordinate</string>
-    <string name="delete_coordinate_text">Delete Co-ordinate</string>
+    <string name="generate_route_text">Generate route</string>
 
 </resources>

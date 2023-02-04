@@ -7,8 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import com.example.navigatour.databinding.ActivityMainBinding
 import com.example.navigatour.utils.LocationPermissionHelper
-import com.mapbox.android.core.location.LocationEngine
-import com.mapbox.android.core.location.LocationEngineProvider
 import com.mapbox.android.gestures.MoveGestureDetector
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
@@ -21,7 +19,6 @@ import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createCircleAnnotationManager
 import com.mapbox.maps.plugin.gestures.OnMapClickListener
 import com.mapbox.maps.plugin.gestures.OnMoveListener
-import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorBearingChangedListener
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
@@ -29,10 +26,8 @@ import com.mapbox.maps.plugin.locationcomponent.location
 import java.lang.ref.WeakReference
 
 
-//var mapView: MapView? = null
-
-
 class MainActivity : AppCompatActivity() {
+    private var routesMarked = ArrayList<String>()
     var currentLongFromClickListener: Double = 0.0
     var currentLatFromClickListener: Double = 0.0
 
@@ -40,12 +35,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var locationPermissionHelper: LocationPermissionHelper
 
     private val onIndicatorBearingChangedListener = OnIndicatorBearingChangedListener {
-        mapView?.getMapboxMap()?.setCamera(CameraOptions.Builder().bearing(it).build())
+        mapView.getMapboxMap().setCamera(CameraOptions.Builder().bearing(it).build())
     }
 
     private val onIndicatorPositionChangedListener = OnIndicatorPositionChangedListener {
-        mapView?.getMapboxMap()?.setCamera(CameraOptions.Builder().center(it).build())
-        mapView?.gestures?.focalPoint = mapView?.getMapboxMap()?.pixelForCoordinate(it)
+        mapView.getMapboxMap().setCamera(CameraOptions.Builder().center(it).build())
+        mapView.gestures.focalPoint = mapView.getMapboxMap().pixelForCoordinate(it)
     }
 
     private val onMoveListener = object : OnMoveListener {
@@ -197,7 +192,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun addMarkerFromClick(){
-            val annotationApi = mapView?.annotations
+            val annotationApi = mapView.annotations
             val circleAnnotationManager = annotationApi?.createCircleAnnotationManager()
             val circleAnnotationOptions: CircleAnnotationOptions = CircleAnnotationOptions().withPoint(Point.fromLngLat(currentLongFromClickListener, currentLatFromClickListener))
                 // Style the circle that will be added to the map.
@@ -208,5 +203,7 @@ class MainActivity : AppCompatActivity() {
                 .withDraggable(true)
             circleAnnotationManager?.create(circleAnnotationOptions)
 
+        routesMarked.add("$currentLongFromClickListener,$currentLatFromClickListener")
+        Log.d("array", routesMarked.toString())
     }
 }
