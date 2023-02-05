@@ -8,16 +8,25 @@ import androidx.appcompat.content.res.AppCompatResources
 import com.example.navigatour.databinding.ActivityMainBinding
 import com.example.navigatour.utils.LocationPermissionHelper
 import com.mapbox.android.gestures.MoveGestureDetector
+import com.mapbox.geojson.Feature
+import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.style.expressions.dsl.generated.interpolate
 import com.mapbox.maps.extension.style.layers.generated.LineLayer
+import com.mapbox.maps.extension.style.layers.generated.lineLayer
+import com.mapbox.maps.extension.style.layers.properties.generated.LineCap
+import com.mapbox.maps.extension.style.layers.properties.generated.LineJoin
+import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
+import com.mapbox.maps.extension.style.style
 import com.mapbox.maps.plugin.LocationPuck2D
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationOptions
+import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createCircleAnnotationManager
+import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
 import com.mapbox.maps.plugin.gestures.OnMapClickListener
 import com.mapbox.maps.plugin.gestures.OnMoveListener
 import com.mapbox.maps.plugin.gestures.gestures
@@ -115,16 +124,39 @@ class MainActivity : AppCompatActivity() {
             setupGesturesListener()
         }
 
+        mapView.buildLayer()
+
+        val annotationApi = mapView?.annotations
+         val polylineAnnotationManager = annotationApi?.createPolylineAnnotationManager()
+        val points = listOf(
+            Point.fromLngLat(-122.072587, 37.406283),
+            Point.fromLngLat(-122.072937, 37.406287),
+            Point.fromLngLat(-122.072933, 37.406522),
+            Point.fromLngLat(-122.072932, 37.40672),
+            )
+// Set options for the resulting line layer.
+        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
+            .withPoints(points)
+            // Style the line that will be added to the map.
+            .withLineColor("#ee4e8b")
+            .withLineWidth(5.0)
+// Add the resulting line to the map.
+        polylineAnnotationManager?.create(polylineAnnotationOptions)
 
 
 
+        val directionsRoute = Feature.fromGeometry(LineString.fromPolyline("{kjcF`ovgVuA[)]", 3))
+        Log.d("price", directionsRoute.toString())
     }
+
 
     //Adds movement listener
     private fun setupGesturesListener() {
         mapView.gestures.addOnMoveListener(onMoveListener)
         mapView.gestures.addOnMapClickListener(onMapClickListener)
+
     }
+
 
     private fun initLocationComponent() {
         val locationComponentPlugin = mapView.location

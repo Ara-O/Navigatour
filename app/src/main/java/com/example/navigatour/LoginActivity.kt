@@ -32,7 +32,7 @@ class LoginActivity : AppCompatActivity() {
                 logInUser(userEmail, userPassword)
             }else{
                 Toast.makeText(baseContext, "One or more fields are empty, " +
-                        "ensure that all fields all fill",
+                        "ensure that all fields are filled",
                     Toast.LENGTH_SHORT).show()
             }
         }

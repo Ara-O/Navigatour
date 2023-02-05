@@ -7,5 +7,5 @@ data class RoutesData(
     val duration: Double,
     val distance: Double,
     val legs: List<RouteLegs>,
-    val geometry: String
+    val geometry: Object
 )
