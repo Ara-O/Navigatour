@@ -13,7 +13,7 @@
         android:layout_height="0dp"
         android:layout_marginBottom="107dp"
         android:tag="mapViewDetailedArea"
-        app:layout_constraintBottom_toTopOf="@+id/textView5"
+        app:layout_constraintBottom_toTopOf="@+id/stepsTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,11 +22,25 @@
     </com.mapbox.maps.MapView>
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/stepsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="189dp"
+        android:fontFamily="@font/poppins_medium"
         android:text="Steps"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mapViewDetailedArea" />
+
+    <TextView
+        android:id="@+id/stepsList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="189dp"
+        android:fontFamily="@font/poppins_light"
+        android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

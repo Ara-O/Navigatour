@@ -32,6 +32,7 @@ import java.io.Serializable
 import java.lang.ref.WeakReference
 
 
+
 class MainActivity : AppCompatActivity() {
     private var routesMarked = ArrayList<String>()
     var currentLongFromClickListener: Double = 0.0
@@ -222,11 +223,17 @@ class MainActivity : AppCompatActivity() {
                 .withCircleStrokeColor("#ffffff")
                 .withDraggable(true)
             circleAnnotationManager?.create(circleAnnotationOptions)
-
+        //TODO = set this to a variable so i can delete them
+//        if (circleAnnotationManager != null) {
+//            if (e != null) {
+//                circleAnnotationManager.delete(e)
+//            }
+//        }
         routesMarked.add("$currentLongFromClickListener,$currentLatFromClickListener")
         Log.d("array", routesMarked.toString())
     }
 
+    var args = Bundle()
     private fun callApi(){
         val thisVal = this
         val chosenRouteMarkers = routesMarked.joinToString(separator=";")
@@ -236,6 +243,7 @@ class MainActivity : AppCompatActivity() {
         var geometryPoints: List<Point> = listOf()
         GlobalScope.launch {
             val result = routesApi.getRoutes(chosenRouteMarkers)
+            Log.d("api data", result.toString())
             if(result != null){
                 for(i in result.body()!!.routes[0].geometry.coordinates.indices) {
                     val subArray = result.body()!!.routes[0].geometry.coordinates[i]
@@ -246,12 +254,24 @@ class MainActivity : AppCompatActivity() {
                     geometryPoints += Point.fromLngLat(subArray[0], subArray[1])
                 }
 
-//               geometryPoints.forEach{
-//                   Log.d("prego", it.toString())
-//               }
+               geometryPoints.forEach{
+                   Log.d("prego", it.toString())
+               }
+
+//                val listOfSteps = ArrayList<RouteSteps>()
+                    var listOfSteps = ""
+                //looping through each step and adding it to the list of steps
+                for(steps in result.body()!!.routes[0].legs[0].steps){
+                    Log.d("steps", steps.maneuver.instruction)
+//                    var test =  RouteSteps()
+                      var step = steps.maneuver.instruction
+//                    listOfSteps.add(steps.maneuver.instruction)
+                      listOfSteps+= step
+                    listOfSteps += ";"
+                }
 
                 val intent = Intent(thisVal, DetailMapActivity::class.java).also {
-                        it.putExtra("coordinateData", geometryPoints as Serializable)
+                        it.putExtra("listOfSteps", listOfSteps)
                 }
 
                 startActivity(intent)

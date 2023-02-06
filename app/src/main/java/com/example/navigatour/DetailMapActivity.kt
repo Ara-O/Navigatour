@@ -1,16 +1,14 @@
 package com.example.navigatour
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import com.example.navigatour.databinding.ActivityDetailedMapBinding
-import com.example.navigatour.databinding.ActivityLoginBinding
 import com.example.navigatour.utils.LocationPermissionHelper
 import com.mapbox.android.gestures.MoveGestureDetector
 import com.mapbox.geojson.Point
-import com.mapbox.geojson.utils.PolylineUtils
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
@@ -24,6 +22,7 @@ import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorBearingChangedListener
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
+import okhttp3.Route
 import java.lang.ref.WeakReference
 
 class DetailMapActivity : AppCompatActivity() {
@@ -52,6 +51,8 @@ class DetailMapActivity : AppCompatActivity() {
 
         override fun onMoveEnd(detector: MoveGestureDetector) {}
     }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityDetailedMapBinding.inflate(layoutInflater)
 
@@ -64,41 +65,62 @@ class DetailMapActivity : AppCompatActivity() {
             onMapReady()
         }
 
-        val coordinateData = intent.getStringExtra("coordinateData")
-
-        val annotationApi = mapView?.annotations
-        val polylineAnnotationManager = annotationApi?.createPolylineAnnotationManager()
-        val points = listOf(
-            Point.fromLngLat(-122.072587, 37.406283),
-            Point.fromLngLat(-122.072937, 37.406287),
-            Point.fromLngLat(-122.072933, 37.406522),
-            Point.fromLngLat(-122.072932, 37.40672),
-        )
-
-        val pointList = coordinateData?.let { PolylineUtils.decode(it, 5) }
 
 
-//        val points = Point(coordinateData)
-// Set options for the resulting line layer.
-        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
-            .withPoints(points)
-            // Style the line that will be added to the map.
-            .withLineColor("#ee4e8b")
-            .withLineWidth(5.0)
-// Add the resulting line to the map.
-        polylineAnnotationManager?.create(polylineAnnotationOptions)
+//        val coordinateData = intent.getStringExtra("coordinateData")
+        val stepsData = intent.getStringExtra("listOfSteps")
+        val stepsDataArray: List<String>
+        stepsDataArray = stepsData?.split(";")!!
 
-//        if (coordinateData != null) {
+
+        for(step in stepsDataArray){
+            binding.stepsList.append(step)
+            binding.stepsList.append("\n")
+
+
+        }
+
+//        var routeSteps: ArrayList<RouteSteps> = intent.getParcelableArrayListExtra("stepsData",RouteSteps::class.java )!!
+//
+//        if (routeSteps != null) {
+//            for(step in routeSteps){
+//             Log.d("detail Map Activiy ", step.step)
+//            }
 //        }
 
+
+    //        val annotationApi = mapView?.annotations
+//        val polylineAnnotationManager = annotationApi?.createPolylineAnnotationManager()
+//        val points = listOf(
+//            Point.fromLngLat(-122.072587, 37.406283),
+//            Point.fromLngLat(-122.072937, 37.406287),
+//            Point.fromLngLat(-122.072933, 37.406522),
+//            Point.fromLngLat(-122.072932, 37.40672),
+//        )
+//
+//        val pointList = coordinateData?.let { PolylineUtils.decode(it, 5) }
+//
+//
+////        val points = Point(coordinateData)
+//// Set options for the resulting line layer.
+//        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
+//            .withPoints(points)
+//            // Style the line that will be added to the map.
+//            .withLineColor("#ee4e8b")
+//            .withLineWidth(5.0)
+//// Add the resulting line to the map.
+//        polylineAnnotationManager?.create(polylineAnnotationOptions)
+//
+////        if (coordinateData != null) {
+////        }
+//
     }
 
 
     private fun onMapReady() {
         mapView.getMapboxMap().setCamera(
             CameraOptions.Builder()
-                .zoom(15.0)
-                .center(Point.fromLngLat(-122.072587, 37.406283))
+                .zoom(17.0)
                 .build()
         )
         mapView.getMapboxMap().loadStyleUri(
