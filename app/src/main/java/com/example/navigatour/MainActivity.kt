@@ -121,6 +121,8 @@ class MainActivity : AppCompatActivity() {
 
         mapView.buildLayer()
 
+        //Example of drawing a polyline
+
         val annotationApi = mapView?.annotations
          val polylineAnnotationManager = annotationApi?.createPolylineAnnotationManager()
         val points = listOf(
@@ -129,17 +131,14 @@ class MainActivity : AppCompatActivity() {
             Point.fromLngLat(-122.072933, 37.406522),
             Point.fromLngLat(-122.072932, 37.40672),
             )
-// Set options for the resulting line layer.
+        // Set options for the resulting line layer.
         val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
             .withPoints(points)
             // Style the line that will be added to the map.
             .withLineColor("#ee4e8b")
             .withLineWidth(5.0)
-// Add the resulting line to the map.
+        // Add the resulting line to the map.
         polylineAnnotationManager?.create(polylineAnnotationOptions)
-
-//        val directionsRoute = Feature.fromGeometry(LineString.fromPolyline("{kjcF`ovgVuA[)]", 3))
-//        Log.d("price", directionsRoute.toString())
     }
 
 
@@ -237,7 +236,7 @@ class MainActivity : AppCompatActivity() {
     private fun callApi(){
         val thisVal = this
         val chosenRouteMarkers = routesMarked.joinToString(separator=";")
-        Log.d("chosenroutemarers", chosenRouteMarkers)
+        Log.d("chosenroutemarkers", chosenRouteMarkers)
         val routesApi = RetrofitHelper.getInstance().create(RoutesApi::class.java)
 
         var geometryPoints: List<Point> = listOf()
@@ -254,20 +253,18 @@ class MainActivity : AppCompatActivity() {
                     geometryPoints += Point.fromLngLat(subArray[0], subArray[1])
                 }
 
-               geometryPoints.forEach{
-                   Log.d("prego", it.toString())
-               }
+//               geometryPoints.forEach{
+//                   Log.d("MainActivity", it.toString())
+//               }
 
-//                val listOfSteps = ArrayList<RouteSteps>()
-                    var listOfSteps = ""
+                var listOfSteps = ""
+
                 //looping through each step and adding it to the list of steps
                 for(steps in result.body()!!.routes[0].legs[0].steps){
                     Log.d("steps", steps.maneuver.instruction)
-//                    var test =  RouteSteps()
                       var step = steps.maneuver.instruction
-//                    listOfSteps.add(steps.maneuver.instruction)
                       listOfSteps+= step
-                    listOfSteps += ";"
+                      listOfSteps += ";"
                 }
 
                 val intent = Intent(thisVal, DetailMapActivity::class.java).also {
