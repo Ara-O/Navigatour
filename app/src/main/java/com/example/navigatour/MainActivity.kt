@@ -2,7 +2,6 @@ package com.example.navigatour
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -17,18 +16,13 @@ import com.mapbox.maps.extension.style.expressions.dsl.generated.interpolate
 import com.mapbox.maps.plugin.LocationPuck2D
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationOptions
-import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createCircleAnnotationManager
-import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
 import com.mapbox.maps.plugin.gestures.OnMapClickListener
 import com.mapbox.maps.plugin.gestures.OnMoveListener
 import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorBearingChangedListener
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.io.Serializable
 import java.lang.ref.WeakReference
 
 
@@ -103,6 +97,10 @@ class MainActivity : AppCompatActivity() {
             callApi()
         }
 
+        binding.deleteMarker.setOnClickListener{
+            deleteMarkers()
+        }
+
     }
 
     //Initialize Maps
@@ -121,24 +119,6 @@ class MainActivity : AppCompatActivity() {
 
         mapView.buildLayer()
 
-        //Example of drawing a polyline
-
-        val annotationApi = mapView?.annotations
-         val polylineAnnotationManager = annotationApi?.createPolylineAnnotationManager()
-        val points = listOf(
-            Point.fromLngLat(-122.072587, 37.406283),
-            Point.fromLngLat(-122.072937, 37.406287),
-            Point.fromLngLat(-122.072933, 37.406522),
-            Point.fromLngLat(-122.072932, 37.40672),
-            )
-        // Set options for the resulting line layer.
-        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
-            .withPoints(points)
-            // Style the line that will be added to the map.
-            .withLineColor("#ee4e8b")
-            .withLineWidth(5.0)
-        // Add the resulting line to the map.
-        polylineAnnotationManager?.create(polylineAnnotationOptions)
     }
 
 
@@ -210,72 +190,33 @@ class MainActivity : AppCompatActivity() {
         locationPermissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-
     private fun addMarkerFromClick(){
             val annotationApi = mapView.annotations
             val circleAnnotationManager = annotationApi?.createCircleAnnotationManager()
             val circleAnnotationOptions: CircleAnnotationOptions = CircleAnnotationOptions().withPoint(Point.fromLngLat(currentLongFromClickListener, currentLatFromClickListener))
                 // Style the circle that will be added to the map.
                 .withCircleRadius(8.0)
-                .withCircleColor("#ee4e8b")
+                .withCircleColor("#add8e6")
                 .withCircleStrokeWidth(2.0)
                 .withCircleStrokeColor("#ffffff")
                 .withDraggable(true)
             circleAnnotationManager?.create(circleAnnotationOptions)
-        //TODO = set this to a variable so i can delete them
-//        if (circleAnnotationManager != null) {
-//            if (e != null) {
-//                circleAnnotationManager.delete(e)
-//            }
-//        }
         routesMarked.add("$currentLongFromClickListener,$currentLatFromClickListener")
-        Log.d("array", routesMarked.toString())
     }
 
-    var args = Bundle()
+    private fun deleteMarkers(){
+        mapView.annotations.cleanup()
+        //clear routesMarked
+        routesMarked.clear()
+    }
+
     private fun callApi(){
         val thisVal = this
         val chosenRouteMarkers = routesMarked.joinToString(separator=";")
-        Log.d("chosenroutemarkers", chosenRouteMarkers)
-        val routesApi = RetrofitHelper.getInstance().create(RoutesApi::class.java)
 
-        var geometryPoints: List<Point> = listOf()
-        GlobalScope.launch {
-            val result = routesApi.getRoutes(chosenRouteMarkers)
-            Log.d("api data", result.toString())
-            if(result != null){
-                for(i in result.body()!!.routes[0].geometry.coordinates.indices) {
-                    val subArray = result.body()!!.routes[0].geometry.coordinates[i]
-                    for (j in subArray.indices) {
-                        //create points from here
-                        //Log.d("sup-end", "index $j - ${subArray[j]}")
-                    }
-                    geometryPoints += Point.fromLngLat(subArray[0], subArray[1])
-                }
-
-//               geometryPoints.forEach{
-//                   Log.d("MainActivity", it.toString())
-//               }
-
-                var listOfSteps = ""
-
-                //looping through each step and adding it to the list of steps
-                for(steps in result.body()!!.routes[0].legs[0].steps){
-                    Log.d("steps", steps.maneuver.instruction)
-                      var step = steps.maneuver.instruction
-                      listOfSteps+= step
-                      listOfSteps += ";"
-                }
-
-                val intent = Intent(thisVal, DetailMapActivity::class.java).also {
-                        it.putExtra("listOfSteps", listOfSteps)
-                }
-
-                startActivity(intent)
-            } else {
-                Log.d("MainActivity", "An error occured")
-            }
+        val intent = Intent(thisVal, DetailMapActivity::class.java).also {
+            it.putExtra("routeMarkers", chosenRouteMarkers)
         }
-
+        startActivity(intent)
     }
 }

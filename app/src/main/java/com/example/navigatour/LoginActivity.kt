@@ -59,8 +59,6 @@ class LoginActivity : AppCompatActivity() {
 
                     // clears the backlog so we can't go back to login page
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
-
                     startActivity(intent)
 
                 } else {

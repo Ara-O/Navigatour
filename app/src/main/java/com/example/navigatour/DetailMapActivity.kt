@@ -22,7 +22,8 @@ import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorBearingChangedListener
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
-import okhttp3.Route
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 class DetailMapActivity : AppCompatActivity() {
@@ -54,9 +55,8 @@ class DetailMapActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityDetailedMapBinding.inflate(layoutInflater)
-
         super.onCreate(savedInstanceState)
+        binding = ActivityDetailedMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
         mapView = binding.mapViewDetailedArea
         //asking for location permission
@@ -65,62 +65,13 @@ class DetailMapActivity : AppCompatActivity() {
             onMapReady()
         }
 
-
-
-//        val coordinateData = intent.getStringExtra("coordinateData")
-        val stepsData = intent.getStringExtra("listOfSteps")
-        val stepsDataArray: List<String>
-        stepsDataArray = stepsData?.split(";")!!
-
-
-        for(step in stepsDataArray){
-            binding.stepsList.append(step)
-            binding.stepsList.append("\n")
-
-
-        }
-
-//        var routeSteps: ArrayList<RouteSteps> = intent.getParcelableArrayListExtra("stepsData",RouteSteps::class.java )!!
-//
-//        if (routeSteps != null) {
-//            for(step in routeSteps){
-//             Log.d("detail Map Activiy ", step.step)
-//            }
-//        }
-
-
-    //        val annotationApi = mapView?.annotations
-//        val polylineAnnotationManager = annotationApi?.createPolylineAnnotationManager()
-//        val points = listOf(
-//            Point.fromLngLat(-122.072587, 37.406283),
-//            Point.fromLngLat(-122.072937, 37.406287),
-//            Point.fromLngLat(-122.072933, 37.406522),
-//            Point.fromLngLat(-122.072932, 37.40672),
-//        )
-//
-//        val pointList = coordinateData?.let { PolylineUtils.decode(it, 5) }
-//
-//
-////        val points = Point(coordinateData)
-//// Set options for the resulting line layer.
-//        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
-//            .withPoints(points)
-//            // Style the line that will be added to the map.
-//            .withLineColor("#ee4e8b")
-//            .withLineWidth(5.0)
-//// Add the resulting line to the map.
-//        polylineAnnotationManager?.create(polylineAnnotationOptions)
-//
-////        if (coordinateData != null) {
-////        }
-//
     }
 
 
     private fun onMapReady() {
         mapView.getMapboxMap().setCamera(
             CameraOptions.Builder()
-                .zoom(17.0)
+                .zoom(14.0)
                 .build()
         )
         mapView.getMapboxMap().loadStyleUri(
@@ -132,25 +83,10 @@ class DetailMapActivity : AppCompatActivity() {
 
         mapView.buildLayer()
 
-        val annotationApi = mapView?.annotations
-        val polylineAnnotationManager = annotationApi?.createPolylineAnnotationManager()
-        val points = listOf(
-            Point.fromLngLat(-122.072587, 37.406283),
-            Point.fromLngLat(-122.072937, 37.406287),
-            Point.fromLngLat(-122.072933, 37.406522),
-            Point.fromLngLat(-122.072932, 37.40672),
-        )
-// Set options for the resulting line layer.
-        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
-            .withPoints(points)
-            // Style the line that will be added to the map.
-            .withLineColor("#ee4e8b")
-            .withLineWidth(5.0)
-// Add the resulting line to the map.
-        polylineAnnotationManager?.create(polylineAnnotationOptions)
-
-//        val directionsRoute = Feature.fromGeometry(LineString.fromPolyline("{kjcF`ovgVuA[)]", 3))
-//        Log.d("price", directionsRoute.toString())
+        val routeMarkers = intent.getStringExtra("routeMarkers")
+        if (routeMarkers != null) {
+            displayPolyline(routeMarkers)
+        }
     }
 
 
@@ -220,6 +156,69 @@ class DetailMapActivity : AppCompatActivity() {
         locationPermissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
+    private fun displayPolyline(chosenRouteMarkers: String){
+        val routesApi = RetrofitHelper.getInstance().create(RoutesApi::class.java)
+
+        var geometryPoints = java.util.ArrayList<Point>()
+//        val gg = ArrayList<Point>()
+        GlobalScope.launch {
+            val result = routesApi.getRoutes(chosenRouteMarkers)
+            Log.d("api data", result.toString())
+            if(result != null){
+                for(i in result.body()!!.routes[0].geometry.coordinates.indices) {
+                    val subArray = result.body()!!.routes[0].geometry.coordinates[i]
+                    for (j in subArray.indices) {
+                        //create points from here
+                        //Log.d("sup-end", "index $j - ${subArray[j]}")
+                    }
+                    geometryPoints += Point.fromLngLat(subArray[0], subArray[1])
+                }
+
+                var listOfSteps = ""
+
+                //looping through each step and adding it to the list of steps
+                for(steps in result.body()!!.routes[0].legs[0].steps){
+                    Log.d("steps", steps.maneuver.instruction)
+                    var step = steps.maneuver.instruction
+                    listOfSteps+= step
+                    listOfSteps += ";"
+                }
+
+                displaySteps(listOfSteps)
+
+                runOnUiThread(Runnable {
+                    // Perform your map operation here
+                    val annotationApi = mapView?.annotations
+                    val polylineAnnotationManager = annotationApi?.createPolylineAnnotationManager()
+                    // Set options for the resulting line layer.
+                    val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
+                        .withPoints(geometryPoints)
+                        // Style the line that will be added to the map.
+                        .withLineColor("#add8e6")
+                        .withLineWidth(5.0)
+                    // Add the resulting line to the map.
+                    polylineAnnotationManager?.create(polylineAnnotationOptions)
+
+                    Log.d("detailMapActivity", "should be displaying line")
+
+                })
 
 
+            } else {
+                Log.d("MainActivity", "An error occured")
+            }
+        }
+    }
+
+    private fun displaySteps(listOfSteps: String){
+        runOnUiThread(Runnable {
+            // Perform your map operation here
+        val stepsDataArray: List<String> = listOfSteps?.split(";")!!
+
+        for(step in stepsDataArray){
+            binding.stepsList.append(step)
+            binding.stepsList.append("\n")
+        }
+        })
+    }
 }

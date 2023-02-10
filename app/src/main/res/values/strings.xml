@@ -17,6 +17,8 @@
     <string name="selected_latitude">00.00.0</string>
     <string name="add_coordinate_text">Add Co-ordinate</string>
     <string name="generate_route_text">Generate route</string>
+    <string name="steps_text">Directions</string>
+    <string name="delete_markers">Delete Markers</string>
     <string name="app_instructions">Help: Select a spot on the map and click the add co-ordinate button to add markers</string>
 
 </resources>
